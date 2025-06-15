@@ -32,8 +32,8 @@ const ThemedHistoryCard = ({
       {...props}
     >
       <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
-        <ThemedText style={styles.title}>{title}</ThemedText>
-        <ThemedText style={styles.date}>{date}</ThemedText>
+        <ThemedText title={true} style={styles.title}>{title}</ThemedText>
+        <ThemedText title={true} style={styles.date}>{date}</ThemedText>
       </View>
       <ThemedText numberOfLines={5} style={{ width: "100%" }}>
         {content}
@@ -58,11 +58,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: Colors.text,
   },
   date: {
     fontSize: 16,
-    color: Colors.textSecondary,
   },
 });
 

@@ -13,9 +13,19 @@ import { useHistory } from "../../../hooks/useHistory";
 
 const History = () => {
   const { user, logout } = useUser();
-  const { histories, fetchHistories } = useHistory();
+  const { histories, fetchHistories, fetchHistoryById } = useHistory();
   const colorScheme = useColorScheme();
   const theme = Colors[colorScheme] ?? Colors.light;
+
+  const findHistory = async (id) => {
+    console.log("Finding history with ID:", id);
+    try {
+      await fetchHistoryById(id);
+      router.push("history/result");
+    } catch (error) {
+      console.error("Error finding history:", error);
+    }
+  }
 
   const handleLogout = async () => {
     await logout();
@@ -76,8 +86,8 @@ const History = () => {
               key={history.id}
               title={history.title}
               content={history.content}
-              date={history.lastmodified.toDate().toLocaleString()
-              }
+              date={history.lastmodified.toDate().toLocaleString()}
+              onPress={() => findHistory(history.id)}
             />
           ))
         )}

@@ -130,7 +130,7 @@ const Create = () => {
               alignItems: "center",
             }}
           >
-            <ThemedText title={true} style={{ fontSize: 28 }}>
+            <ThemedText title={true} style={{ color: "white", fontSize: 28 }}>
               Refine
             </ThemedText>
           </ThemedButton>
