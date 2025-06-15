@@ -7,7 +7,7 @@ export default function Layout() {
                 headerShown: false,
             }}>
             <Stack.Screen name="index" options={{ title: "Create New Texts" }} />
-            <Stack.Screen name="result" options={{ title: "Result" }} />
+            <Stack.Screen name="result" options={{ headerShown: true, title: "Result" }} />
         </Stack>
     );
 }

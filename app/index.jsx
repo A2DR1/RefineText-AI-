@@ -20,7 +20,7 @@ import { useRouter } from "expo-router";
 
 const home = () => {
   const router = useRouter();
-  const [countdown, setCountdown] = useState(3); // starting at 3 seconds
+  const [countdown, setCountdown] = useState(1); // starting at 3 seconds
 
   useEffect(() => {
     if (countdown === 0) {
@@ -61,6 +61,10 @@ const home = () => {
       <ThemedText style={{ textAlign: "right" }}>
         Leaving in {countdown} seconds
       </ThemedText>
+
+      {/* <Link href="/home">
+        <ThemedText style={{ textAlign: "right" }}>Create New</ThemedText>
+      </Link> */}
 
     </ThemedView>
   );

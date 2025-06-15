@@ -1,12 +1,18 @@
 import { StyleSheet, Text, View } from "react-native";
 import ThemedView from "../../../components/ThemedView";
 import ThemedText from "../../../components/ThemedText";
+import ThemedTextInput from "../../../components/ThemedTextInput";
+import { useState } from "react";
 
 const Result = () => {
+    const [text, setText] = useState("");
     return (
         <ThemedView style={styles.container}>
             <ThemedText style={styles.title} title={true}>Result</ThemedText>
+            
             <ThemedText style={styles.text}>This is the Result page.</ThemedText>
+
+            <ThemedTextInput text={text} setText={setText} />
             
         </ThemedView>
     );

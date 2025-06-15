@@ -1,36 +1,101 @@
-import ThemedView from "../../components/ThemedView";
-import ThemedText from "../../components/ThemedText";
 import Spacer from "../../components/Spacer";
-import { StyleSheet, Text } from "react-native";
+import ThemedText from "../../components/ThemedText";
+import ThemedView from "../../components/ThemedView";
+import { StyleSheet, Text, Keyboard } from "react-native";
 import { Link } from "expo-router";
+import { Colors } from "../../constants/Colors";
 import ThemedButton from "../../components/ThemedButton";
+import ThemedTextInput from "../../components/ThemedTextInput";
+import { useState } from "react";
+import { TouchableWithoutFeedback } from "react-native";
+import { useUser } from "../../hooks/useUser";
+import { router } from "expo-router";
+import { useEffect } from "react";
 
 const Register = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState(null);
 
-  const handleSubmit = () => {
+  const { user, register } = useUser();
+
+  const handleSubmit = async () => {
     // Handle register logic here
-    console.log("Register button pressed");
+    setError(null); // Reset error state
+    try {
+      await register(email, password);
+    } catch (error) {
+      console.log("Registration error:", error);
+      setError(error.message);
+    }
   };
 
+  useEffect(() => {
+    if (user) {
+      console.log("User already logged in, redirecting to history");
+      router.replace("/history");
+    } else {
+      console.log("No user logged in, showing register form");
+    }
+  }, [user]);
+
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText title={true} style={styles.title}>
-        Register
-      </ThemedText>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <ThemedView style={styles.container}>
+        <ThemedText title={true} style={styles.title}>
+          Create Your Account
+        </ThemedText>
+
+      <ThemedTextInput
+        onChangeText={(text) => setEmail(text)}
+        value={email}
+        placeholder="Email"
+        style={styles.textinput}
+        keyboardType="email-address"
+
+      />
+
+      <ThemedTextInput
+        onChangeText={(text) => setPassword(text)}
+        value={password}
+        placeholder="Password"
+        secureTextEntry
+        style={styles.textinput}
+      />
+
+      <ThemedTextInput
+        onChangeText={(text) => setConfirmPassword(text)}
+        value={confirmPassword}
+        placeholder="Confirm Your Password"
+        secureTextEntry
+        style={styles.textinput}
+      />
 
       <ThemedButton onPress={handleSubmit}>
         <Text style={{ color: "white" }}>Register</Text>
       </ThemedButton>
 
-      <Spacer height={100} />
-      <Link href="/login">
+        <Spacer size={10} />
+        {error && (
+          <ThemedText style={{ color: "red" }}>{error}</ThemedText>
+        )}
+        <Spacer size={10} />
+
+      <Link href="/login" replace>
         <ThemedText style={styles.text}>Login Instead</ThemedText>
       </Link>
+
+      <ThemedButton
+          onPress={() => router.replace("/history")}
+        >
+          <Text style={{ color: "white" }}>Stay not signed in</Text>
+        </ThemedButton>
     </ThemedView>
+    </TouchableWithoutFeedback>
   );
 };
 export default Register;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -38,15 +103,25 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  textinput: {
+    fontSize: 16,
+    marginTop: 20,
+    width: "80%",
+    height: 60,
+  },
   title: {
     textAlign: "center",
-    fontSize: 18,
+    fontSize: 30,
     marginBottom: 30,
   },
-  text: {
-    fontSize: 16,
-    color: "#007AFF",
-    textDecorationLine: "underline",
+  btn: {
+    backgroundColor: Colors.primary,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 15,
+    borderRadius: 5,
+  },
+  pressed: {
+    opacity: 0.8,
   },
 });
-// This code defines a simple registration page for a React Native application using Expo Router.

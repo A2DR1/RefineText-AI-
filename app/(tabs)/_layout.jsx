@@ -22,8 +22,6 @@ const DashBoardLayout = () => {
       >
         <Tabs.Screen name="home" options={{ title: "Refine", tabBarIcon: ({ color, focused }) => <Ionicons size={24} name={focused ? "add" : "add-outline"} color={color} /> }} />
         <Tabs.Screen name="history" options={{ title: "History", tabBarIcon: ({ color, focused }) => <Ionicons size={24} name={focused ? "time" : "time-outline"} color={color} /> }} />
-        <Tabs.Screen name="profile" options={{ title: "Profile", tabBarIcon: ({ color, focused }) => <Ionicons size={24} name={focused ? "person" : "person-outline"} color={color} /> }} />
-
       </Tabs>
   );
 }
