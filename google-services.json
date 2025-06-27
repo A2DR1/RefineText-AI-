@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "402521905574",
+    "project_id": "refinetext-ai",
+    "storage_bucket": "refinetext-ai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:402521905574:android:d3312096df4baacc019767",
+        "android_client_info": {
+          "package_name": "com.austinshen.refinetextai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "402521905574-81jva5q3h4uncor5at2pi83m8594uaed.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.austinshen.refinetextai",
+            "certificate_hash": "5fe501ffdd4ebf8f1b51d46a33679625b1e8a85c"
+          }
+        },
+        {
+          "client_id": "402521905574-egjm951vu17l96249unhmaseh46evaqi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.austinshen.refinetextai",
+            "certificate_hash": "2d5709a5a30785961fe52e680b0b2ae6ca0d5341"
+          }
+        },
+        {
+          "client_id": "402521905574-42elgonmacmrims5l51s5musnafqkqqk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA715o_i1jOeyw1-E9dk_1q2xiv-QPfym8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "402521905574-42elgonmacmrims5l51s5musnafqkqqk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "402521905574-b4etqfmvskcljdl5tm8345ir94or26cu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.austinshen.refinetextai"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

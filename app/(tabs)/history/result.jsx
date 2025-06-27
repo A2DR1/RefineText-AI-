@@ -1,20 +1,20 @@
+import { AntDesign } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import {
+  Keyboard,
   StyleSheet,
   Text,
-  Keyboard,
   TouchableWithoutFeedback,
-  KeyboardAvoidingView,
-  Platform,
 } from "react-native";
-import ThemedView from "../../../components/ThemedView";
-import ThemedText from "../../../components/ThemedText";
-import ThemedTextInput from "../../../components/ThemedTextInput";
 import ThemedButton from "../../../components/ThemedButton";
 import ThemedLoader from "../../../components/ThemedLoader";
-import { useEffect, useState } from "react";
-import { router } from "expo-router";
 import ThemedScrollView from "../../../components/ThemedScrollView";
+import ThemedText from "../../../components/ThemedText";
+import ThemedTextInput from "../../../components/ThemedTextInput";
+import ThemedView from "../../../components/ThemedView";
 import { useHistory } from "../../../hooks/useHistory";
+import { useRefine } from "../../../hooks/useRefine";
 
 const Result = () => {
   const [result, setResult] = useState("");
@@ -22,35 +22,95 @@ const Result = () => {
   const [title, setTitle] = useState("default title");
   const [loading, setLoading] = useState(false);
 
-  const { history } = useHistory();
+  const { history, updateHistory, deleteHistory } = useHistory();
+  const {
+    toneContext,
+    categoryContext,
+    textContext,
+    setTextContext,
+    titleContext,
+    suggestionContext,
+    setSuggestionContext,
+  } = useRefine();
+
+  // update textcontext with the result
+  useEffect(() => {
+    setTextContext(result);
+  }, [result]);
 
   useEffect(() => {
     setResult(history?.content || "");
     setTitle(history?.title || "default title");
 
-    if (history){
-        console.log("History found:", history.title);
+    if (history) {
+      console.log("History found:", history.title);
+    } else {
+      console.log("No history found, redirecting to index.");
     }
-    else {
-        console.log("No history found, redirecting to index.");
-    }
-    
-  }, [history])
+  }, [history]);
 
-  const onUpdate = async() => {
+  useEffect(() => {
+    setSuggestionContext(suggestions);
+  }, [suggestions]);
+
+  const onDelete = async () => {
     try {
+      setLoading(true);
+      console.log("Deleting history with ID:", history.id);
+      await deleteHistory(history.id);
+      setLoading(false);
+      router.replace("history");
+    } catch (error) {
+      console.error("Error deleting history:", error);
+    }
+  };
+
+  // not working yet, but might not need it after all
+  const onUpdate = async () => {
+    try {
+      setLoading(true);
+      console.log("Update text");
+      await updateHistory(history.id, textContext, suggestionContext);
+      setLoading(false);
+      router.replace("history");
     } catch (error) {
       console.error("Error updating history:", error);
     }
-  }
+  };
 
-  const onRefine = async() => {
+  const onRefineAgain = async () => {
+    setLoading(true);
+    console.log("Category:", categoryContext);
+    console.log("Tone:", toneContext);
+    console.log("Text:", textContext);
+    console.log("Suggestion:", suggestionContext);
+
     try {
+      const res = await fetch(
+        "https://us-central1-refinetext-ai.cloudfunctions.net/RefineAgain",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: textContext,
+            category: categoryContext,
+            tone: toneContext,
+            suggestion: suggestionContext,
+          }),
+        }
+      );
 
-    }catch (error) {
-      console.error("Error refining history:", error);
+      const data = await res.json();
+      setResult(data);
+      console.log("Response from server:", data);
+    } catch (error) {
+      console.error("Error in useEffect:", error);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   if (loading) return <ThemedLoader />;
 
@@ -62,15 +122,21 @@ const Result = () => {
         contentContainerStyle={{ flexGrow: 1 }}
       >
         <ThemedView style={styles.container}>
-          <ThemedText style={styles.title} title={true}>
-            {title}
-          </ThemedText>
 
-          <ThemedText style={styles.text}>This is the Result page.</ThemedText>
+          <ThemedView style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+            <ThemedText style={styles.title} title={true}>
+              {title}
+            </ThemedText>
+
+          <ThemedButton onPress={onDelete}>
+            <AntDesign name="delete" size={30} color="white" />
+          </ThemedButton>
+          </ThemedView>
+
 
           <ThemedTextInput
             placeholder="Result"
-            editable={true}
+            editable={false}
             onChangeText={setResult}
             multiline={true}
             numberOfLines={10}
@@ -92,9 +158,10 @@ const Result = () => {
             <ThemedButton onPress={onUpdate}>
               <Text style={{ color: "white" }}>Update Results</Text>
             </ThemedButton>
-            <ThemedButton onPress={onRefine}>
+            <ThemedButton onPress={onRefineAgain}>
               <Text style={{ color: "white" }}>Refine Again</Text>
             </ThemedButton>
+
           </ThemedView>
         </ThemedView>
       </ThemedScrollView>
@@ -118,7 +185,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   resultBox: {
-    height: 300,
+    height: 500,
     width: "90%",
     alignSelf: "center",
     marginBottom: 20,

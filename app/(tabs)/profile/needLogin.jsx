@@ -13,7 +13,7 @@ const NeedLogin = () => {
   useEffect(() => {
     if (user) {
       console.log("User already logged in, redirecting to history");
-      router.replace("/history");
+      router.replace("/profile");
     } else {
       console.log("No user logged in, showing login prompt");
     }
@@ -31,10 +31,6 @@ const NeedLogin = () => {
           Login
         </ThemedText>
       </ThemedButton>
-
-      {/* <ThemedText style={styles.text}>
-        Please login to view your history.
-      </ThemedText> */}
 
     </ThemedView>
   );

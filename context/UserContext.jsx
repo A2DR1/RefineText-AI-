@@ -1,12 +1,14 @@
-import { createContext } from "react";
-import { useState } from "react";
-import { auth } from "../lib/firebase";
+import {
+  GoogleOneTapSignIn
+} from '@react-native-google-signin/google-signin';
 import {
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
 } from "firebase/auth";
+import { createContext, useState } from "react";
+import { auth } from "../lib/firebase";
 
 export const userContext = createContext();
 
@@ -23,9 +25,13 @@ export const UserProvider = ({ children }) => {
     setAuthChecked(true);
   });
 
-    const login = async (username, password) => {
+  const login = async (username, password) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, username, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        username,
+        password
+      );
       setUser(userCredential.user);
     } catch (error) {
       console.error("Error during login:", error.code, error.message);
@@ -33,9 +39,13 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-    const register = async (username, password) => {
+  const register = async (username, password) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, username, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        username,
+        password
+      );
       setUser(userCredential.user);
       console.log("User registered:", userCredential.user.email);
     } catch (error) {
@@ -55,8 +65,38 @@ export const UserProvider = ({ children }) => {
       });
   }
 
+  async function loginWithGoogle() {
+    try {
+      GoogleOneTapSignIn.configure(); // move this to after your app starts
+      await GoogleOneTapSignIn.checkPlayServices();
+      const signInResponse = await GoogleOneTapSignIn.signIn();
+      if (signInResponse.type === "success") {
+        // use signInResponse.data
+      } else if (signInResponse.type === "noSavedCredentialFound") {
+        // the user wasn't previously signed into this app
+        const createResponse = await GoogleOneTapSignIn.createAccount();
+        if (createResponse.type === "success") {
+          // use createResponse.data
+        } else if (createResponse.type === "noSavedCredentialFound") {
+          // no Google user account was present on the device yet (unlikely but possible)
+          const explicitResponse =
+            await GoogleOneTapSignIn.presentExplicitSignIn();
+
+          if (explicitResponse.type === "success") {
+            // use explicitResponse.data
+          }
+        }
+      }
+      // the else branches correspond to the user canceling the sign in
+    } catch (error) {
+      // handle error
+    }
+  }
+
   return (
-    <userContext.Provider value={{ user, login, register, logout, authChecked }}>
+    <userContext.Provider
+      value={{ user, login, register, logout, authChecked, loginWithGoogle }}
+    >
       {children}
     </userContext.Provider>
   );

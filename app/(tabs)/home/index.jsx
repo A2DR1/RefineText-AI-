@@ -1,26 +1,21 @@
-import {
-  StyleSheet,
-  ScrollView,
-  TextInput,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Text,
-} from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import Spacer from "../../../components/Spacer";
-import ThemedText from "../../../components/ThemedText";
-import ThemedView from "../../../components/ThemedView";
-import ThemedScrollView from "../../../components/ThemedScrollView";
-import ThemedTextInput from "../../../components/ThemedTextInput";
-import { Link } from "expo-router";
 import { router } from "expo-router";
 import { useState } from "react";
-import ThemedCard from "../../../components/ThemedCard";
+import {
+  Keyboard,
+  StyleSheet,
+  TouchableWithoutFeedback
+} from "react-native";
+import Spacer from "../../../components/Spacer";
 import ThemedButton from "../../../components/ThemedButton";
+import ThemedScrollView from "../../../components/ThemedScrollView";
+import ThemedText from "../../../components/ThemedText";
+import ThemedTextInput from "../../../components/ThemedTextInput";
+import ThemedView from "../../../components/ThemedView";
+import { useHistory } from "../../../hooks/useHistory";
+import { useRefine } from "../../../hooks/useRefine";
 import { useUser } from "../../../hooks/useUser";
 import { auth } from "../../../lib/firebase";
-import ThemedLoader from "../../../components/ThemedLoader";
-import { useHistory } from "../../../hooks/useHistory";
 
 const Create = () => {
   const [category, setCategory] = useState("option1");
@@ -30,16 +25,44 @@ const Create = () => {
   const { user } = useUser();
   const { currentUser } = auth;
   const { createHistory } = useHistory();
+  const { setCategoryContext, setToneContext, setTextContext, setTitleContext } = useRefine();
 
-  const onSubmit = async() => {
+  const onSubmit = async () => {
     try {
-      // await createHistory(category, tone, text, title);
-      // console.log("History created successfully");
+      setCategoryContext(category);
+      setToneContext(tone);
+      setTextContext(text);
+      setTitleContext(title);
       router.push("/home/result");
     } catch (error) {
-      console.error("Error creating history:", error);  
+      console.error("Error creating history:", error);
     }
-  }
+  };
+
+  const testPostman = async () => {
+    fetch("https://us-central1-refinetext-ai.cloudfunctions.net/testPostman", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: "Austin" }),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+      .catch((err) => console.error(err));
+  };
+
+  const testOpenAI = async () => {
+    fetch("https://us-central1-refinetext-ai.cloudfunctions.net/testOpenAI", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+      .catch((err) => console.error(err));
+  };
 
   return (
     <TouchableWithoutFeedback
@@ -97,9 +120,10 @@ const Create = () => {
             onValueChange={(itemValue) => setCategory(itemValue)}
             style={styles.picker}
           >
-            <Picker.Item label="Option 1" value="option1" />
-            <Picker.Item label="Option 2" value="option2" />
-            <Picker.Item label="Option 3" value="option3" />
+            <Picker.Item label="Professional" value="professional" />
+            <Picker.Item label="Romantic/Dating" value="romantic" />
+            <Picker.Item label="Workplace" value="workplace" />
+            <Picker.Item label="Parenting" value="parenting" />
           </Picker>
 
           <Spacer height={150} />
@@ -111,16 +135,18 @@ const Create = () => {
             onValueChange={(itemValue) => setTone(itemValue)}
             style={styles.picker}
           >
-            <Picker.Item label="Option 1" value="option1" />
-            <Picker.Item label="Option 2" value="option2" />
-            <Picker.Item label="Option 3" value="option3" />
+            <Picker.Item label="Make it more polite" value="polite" />
+            <Picker.Item label="Add humor or charm" value="humorous" />
+            <Picker.Item label="make it more concise" value="concise" />
+            <Picker.Item label="Add emotional warmth" value="emotional warmth" />
+            <Picker.Item label="professional but empathetic" value="professional but empathetic" />
           </Picker>
 
           <Spacer height={150} />
 
           <ThemedButton
             onPress={onSubmit}
-            style={{ 
+            style={{
               marginTop: 20,
               marginHorizontal: 20,
               width: 200,
@@ -136,8 +162,44 @@ const Create = () => {
           </ThemedButton>
 
           <Spacer height={20} />
-        </ThemedView>
+{/* 
+          <ThemedButton
+            onPress={testPostman}
+            style={{
+              marginTop: 20,
+              marginHorizontal: 20,
+              width: 200,
+              height: 80,
+              alignSelf: "center",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ThemedText title={true} style={{ color: "white", fontSize: 28 }}>
+              Test Postman
+            </ThemedText>
+          </ThemedButton>
 
+           <Spacer height={20} />
+
+          <ThemedButton
+            onPress={testOpenAI}
+            style={{
+              marginTop: 20,
+              marginHorizontal: 20,
+              width: 200,
+              height: 80,
+              alignSelf: "center",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ThemedText title={true} style={{ color: "white", fontSize: 28 }}>
+              Test OpenAI
+            </ThemedText>
+          </ThemedButton> */}
+
+        </ThemedView>
       </ThemedScrollView>
     </TouchableWithoutFeedback>
   );

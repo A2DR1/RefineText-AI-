@@ -11,27 +11,111 @@ import ThemedText from "../../../components/ThemedText";
 import ThemedTextInput from "../../../components/ThemedTextInput";
 import ThemedButton from "../../../components/ThemedButton";
 import ThemedLoader from "../../../components/ThemedLoader";
-import { useState } from "react";
+import { use, useState, useEffect } from "react";
 import { router } from "expo-router";
 import ThemedScrollView from "../../../components/ThemedScrollView";
 import { useHistory } from "../../../hooks/useHistory";
+import { useRefine } from "../../../hooks/useRefine";
+import { auth } from "../../../lib/firebase";
 
 const Result = () => {
+  const [errorMessage, setErrorMessage] = useState("");
+
   const [result, setResult] = useState("");
-  const [suggestions, setSuggestions] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [suggestion, setSuggestion] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const { createHistory } = useHistory();
+  const { toneContext, categoryContext, textContext, setTextContext, titleContext, suggestionContext, setSuggestionContext } = useRefine();
 
-  const onSubmit = async() => {
+useEffect(() => {
+  const fetchData = async () => {
+    console.log("Loading...");
+    console.log("Category:", categoryContext);
+    console.log("Tone:", toneContext);
+    console.log("Text:", textContext);
+
     try {
-      await createHistory("category", "tone", result, "title");
+      const res = await fetch("https://us-central1-refinetext-ai.cloudfunctions.net/Refine", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: textContext,
+          category: categoryContext,
+          tone: toneContext,
+        }),
+      });
+
+      const data = await res.json();
+      setResult(data);
+      console.log("Response from server:", data);
+    } catch (error) {
+      console.error("Error in useEffect:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
+
+useEffect(() => {
+  setTextContext(result);
+}, [result]);
+
+useEffect(() => {
+  setSuggestionContext(suggestion);
+}, [suggestion, setSuggestionContext]);
+
+  const onSave = async() => {
+    try {
+      if (!auth.currentUser) {
+
+        console.error("User is not authenticated");
+        return;
+      }
+      setLoading(true);
+      await createHistory(categoryContext, toneContext, result, titleContext);
       console.log("History created successfully");
+      setLoading(false);
         router.replace("/history");
     } catch (error) {
       console.error("Error creating history:", error);  
     }
   }
+
+  const onRefineAgain = async () => {
+    setLoading(true);
+    console.log("Category:", categoryContext);
+    console.log("Tone:", toneContext);
+    console.log("Text:", textContext);
+    console.log("Suggestion:", suggestionContext);
+
+    try {
+      const res = await fetch("https://us-central1-refinetext-ai.cloudfunctions.net/RefineAgain", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: textContext,
+          category: categoryContext,
+          tone: toneContext,
+          suggestion: suggestionContext,
+        }),
+      });
+
+      const data = await res.json();
+      setResult(data);
+      console.log("Response from server:", data);
+    } catch (error) {
+      console.error("Error in useEffect:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) return <ThemedLoader />;
 
@@ -44,7 +128,7 @@ const Result = () => {
       >
         <ThemedView style={styles.container}>
           <ThemedText style={styles.title} title={true}>
-            Result
+            {titleContext || "Result"}
           </ThemedText>
 
           <ThemedText style={styles.text}>This is the Result page.</ThemedText>
@@ -63,17 +147,17 @@ const Result = () => {
           <ThemedText style={styles.text}>Suggestions:</ThemedText>
           <ThemedTextInput
             placeholder="Suggestions"
-            onChangeText={setSuggestions}
-            value={suggestions}
+            onChangeText={setSuggestion}
+            value={suggestion}
             multiline
             style={styles.suggestionBox}
           />
 
           <ThemedView style={styles.buttonRow}>
-            <ThemedButton onPress={onSubmit}>
+            <ThemedButton onPress={onSave}>
               <Text style={{ color: "white" }}>Save Results</Text>
             </ThemedButton>
-            <ThemedButton onPress={() => {}}>
+            <ThemedButton onPress={onRefineAgain}>
               <Text style={{ color: "white" }}>Refine Again</Text>
             </ThemedButton>
           </ThemedView>

@@ -1,15 +1,15 @@
-import { StyleSheet, useColorScheme, Text, View } from "react-native";
-import { Colors } from "../../../constants/Colors";
-import ThemedView from "../../../components/ThemedView";
-import ThemedText from "../../../components/ThemedText";
+import { useFocusEffect } from "@react-navigation/native";
+import { router } from "expo-router";
+import { useCallback } from "react";
+import { StyleSheet, Text, useColorScheme, View } from "react-native";
 import ThemedButton from "../../../components/ThemedButton";
 import ThemedHistoryCard from "../../../components/ThemedHistoryCard";
-import { router } from "expo-router";
-import { useUser } from "../../../hooks/useUser";
-import { useCallback, useEffect } from "react";
-import { useFocusEffect } from "@react-navigation/native";
 import ThemedScrollView from "../../../components/ThemedScrollView";
+import ThemedText from "../../../components/ThemedText";
+import ThemedView from "../../../components/ThemedView";
+import { Colors } from "../../../constants/Colors";
 import { useHistory } from "../../../hooks/useHistory";
+import { useUser } from "../../../hooks/useUser";
 
 const History = () => {
   const { user, logout } = useUser();
@@ -51,6 +51,7 @@ const History = () => {
         safe={true}
         style={[styles.container, { backgroundColor: theme.background }]}
       >
+
         <View
           style={{
             flex: 1,
@@ -84,11 +85,16 @@ const History = () => {
           histories.map((history) => (
             <ThemedHistoryCard
               key={history.id}
+              id={history.id}
               title={history.title}
               content={history.content}
-              date={history.lastmodified.toDate().toLocaleString()}
+              date={history.lastmodified.toDate()}
               onPress={() => findHistory(history.id)}
-            />
+              refresh={fetchHistories}
+              category={history.category}
+            >
+              
+            </ThemedHistoryCard>
           ))
         )}
       </ThemedView>

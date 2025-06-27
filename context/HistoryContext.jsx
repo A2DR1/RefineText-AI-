@@ -1,14 +1,16 @@
-import { createContext, useState } from "react";
 import {
-  collection,
-  getDocs,
-  query,
-  where,
   addDoc,
-  Timestamp,
+  collection,
+  deleteDoc,
   doc,
   getDoc,
+  getDocs,
+  query,
+  Timestamp,
+  updateDoc,
+  where,
 } from "firebase/firestore";
+import { createContext, useState } from "react";
 import { useUser } from "../hooks/useUser";
 import { db } from "../lib/firebase";
 
@@ -77,13 +79,15 @@ export const HistoryProvider = ({ children }) => {
   }
 
   // not tested yet, could be wrong
-  async function updateHistory(id, historyData) {
+  async function updateHistory(id, content, suggestion) {
     try {
+      console.log("Updating history with ID:", id);
       await updateDoc(doc(db, "histories", id), {
-        content: historyData.content,
-        suggestions: historyData.suggestions,
+        content: content,
+        suggestions: suggestion,
         lastmodified: Timestamp.now(),
       });
+      console.log("Document successfully updated.");
     } catch (error) {
       console.error("Error updating history:", error);
     }

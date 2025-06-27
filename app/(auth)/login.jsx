@@ -1,15 +1,23 @@
-import ThemedText from "../../components/ThemedText";
-import ThemedView from "../../components/ThemedView";
-import { StyleSheet, Keyboard, Text } from "react-native";
-import { Link } from "expo-router";
-import { Colors } from "../../constants/Colors";
-import ThemedButton from "../../components/ThemedButton";
-import ThemedTextInput from "../../components/ThemedTextInput";
+import { Ionicons } from "@expo/vector-icons";
+import {
+  GoogleLogoButton
+} from '@react-native-google-signin/google-signin';
+import { Link, router } from "expo-router";
 import { useState } from "react";
-import { TouchableWithoutFeedback } from "react-native";
-import { useUser } from "../../hooks/useUser";
-import { router } from "expo-router";
+import {
+  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import Spacer from "../../components/Spacer";
+import ThemedButton from "../../components/ThemedButton";
+import ThemedText from "../../components/ThemedText";
+import ThemedTextInput from "../../components/ThemedTextInput";
+import ThemedView from "../../components/ThemedView";
+import { Colors } from "../../constants/Colors";
+import { useUser } from "../../hooks/useUser";
 
 const login = () => {
   const [email, setEmail] = useState("");
@@ -17,7 +25,7 @@ const login = () => {
   const [error, setError] = useState(null);
 
   // Access the user context
-  const { user, login } = useUser();
+  const { user, login, loginWithGoogle } = useUser();
 
   const handleSubmit = async () => {
     setError(null); // Reset error state
@@ -30,6 +38,21 @@ const login = () => {
       setError(error.message);
     }
   };
+
+  // const { promptAsync, request } = useGoogleAuth();
+
+  const handleGoogleLogin = async () => {
+    setError(null); // Reset error state
+    try {
+      // await promptAsync();
+      await loginWithGoogle();
+      router.replace("/history");
+    } catch (error) {
+      console.log("Google login error:", error);
+      setError(error.message);
+    }
+  };
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <ThemedView style={styles.container}>
@@ -57,30 +80,29 @@ const login = () => {
           <Text style={{ color: "white" }}>Login</Text>
         </ThemedButton>
 
-      
+        <ThemedButton onPress={handleGoogleLogin}>
+          <View style={{ 
+            flexDirection: "row",
+            
+          }}> 
+          <Ionicons name="logo-google" color="white" size={15}></Ionicons> 
+          <Text style={{ color: "white" }}>   Login with Google</Text>
+          </View>
+        </ThemedButton>
+
+        <GoogleLogoButton onPress={handleGoogleLogin} label="Sign in with Google"/>
+
         <Spacer size={10} />
-        {error && (
-          <ThemedText style={{ color: "red" }}>{error}</ThemedText>
-        )}
+        {error && <ThemedText style={{ color: "red" }}>{error}</ThemedText>}
         <Spacer size={10} />
 
         <Link href="/register" replace>
           <ThemedText style={styles.text}>Register Instead</ThemedText>
         </Link>
 
-        {/* <ThemedButton
-          onPress={() => console.log(user ? user.email : "No user logged in")}
-        >
-          <Text style={{ color: "white" }}>Log Current User</Text>
-        </ThemedButton> */}
-
-        <ThemedButton
-          onPress={() => router.replace("/history")}
-        >
+        <ThemedButton onPress={() => router.replace("/history")}>
           <Text style={{ color: "white" }}>Stay not signed in</Text>
         </ThemedButton>
-
-
       </ThemedView>
     </TouchableWithoutFeedback>
   );
