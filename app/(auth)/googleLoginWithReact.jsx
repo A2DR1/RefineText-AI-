@@ -1,0 +1,64 @@
+import {
+    GoogleSignin,
+    GoogleSigninButton,
+} from "@react-native-google-signin/google-signin";
+import { StatusBar } from "expo-status-bar";
+import { useEffect, useState } from "react";
+import { Button, StyleSheet, Text, View } from "react-native";
+
+export default function App() {
+  const [error, setError] = useState();
+  const [userInfo, setUserInfo] = useState();
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        "402521905574-42elgonmacmrims5l51s5musnafqkqqk.apps.googleusercontent.com",
+      iosClientId:
+        "402521905574-b4etqfmvskcljdl5tm8345ir94or26cu.apps.googleusercontent.com",
+    });
+  }, []);
+
+  const signin = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const user = await GoogleSignin.signIn();
+      setUserInfo(user);
+      setError();
+    } catch (e) {
+      setError(e);
+    }
+  };
+
+  const logout = () => {
+    setUserInfo();
+    GoogleSignin.revokeAccess();
+    GoogleSignin.signOut();
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text>{JSON.stringify(error)}</Text>
+      {userInfo && <Text>{JSON.stringify(userInfo.user)}</Text>}
+      {userInfo ? (
+        <Button title="Logout" onPress={logout} />
+      ) : (
+        <GoogleSigninButton
+          size={GoogleSigninButton.Size.Standard}
+          color={GoogleSigninButton.Color.Dark}
+          onPress={signin}
+        />
+      )}
+      <StatusBar style="auto" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

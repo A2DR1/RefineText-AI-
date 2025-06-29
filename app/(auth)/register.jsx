@@ -1,16 +1,13 @@
+import { Link, router } from "expo-router";
+import { useEffect, useState } from "react";
+import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback } from "react-native";
 import Spacer from "../../components/Spacer";
-import ThemedText from "../../components/ThemedText";
-import ThemedView from "../../components/ThemedView";
-import { StyleSheet, Text, Keyboard } from "react-native";
-import { Link } from "expo-router";
-import { Colors } from "../../constants/Colors";
 import ThemedButton from "../../components/ThemedButton";
+import ThemedText from "../../components/ThemedText";
 import ThemedTextInput from "../../components/ThemedTextInput";
-import { useState } from "react";
-import { TouchableWithoutFeedback } from "react-native";
+import ThemedView from "../../components/ThemedView";
+import { Colors } from "../../constants/Colors";
 import { useUser } from "../../hooks/useUser";
-import { router } from "expo-router";
-import { useEffect } from "react";
 
 const Register = () => {
   const [email, setEmail] = useState("");

@@ -32,10 +32,6 @@ const NeedLogin = () => {
         </ThemedText>
       </ThemedButton>
 
-      {/* <ThemedText style={styles.text}>
-        Please login to view your history.
-      </ThemedText> */}
-
     </ThemedView>
   );
 };

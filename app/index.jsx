@@ -1,22 +1,12 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  TextInput,
-  Keyboard,
-} from "react-native";
-import { Link } from "expo-router";
-import Logo from "../assets/images/react-logo.png"; // Ensure the path is correct
-import ThemedView from "../components/ThemedView";
-import ThemedLogo from "../components/ThemedLogo";
-import ThemedCard from "../components/ThemedCard";
-import ThemedText from "../components/ThemedText";
-import Spacer from "../components/Spacer";
-import { useState } from "react";
-import ThemedButton from "../components/ThemedButton";
-import { useEffect } from "react";
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import {
+  StyleSheet
+} from "react-native";
+import Spacer from "../components/Spacer";
+import ThemedLogo from "../components/ThemedLogo";
+import ThemedText from "../components/ThemedText";
+import ThemedView from "../components/ThemedView";
 
 const home = () => {
   const router = useRouter();

@@ -2,7 +2,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import { useCallback } from "react";
 import { StyleSheet, useColorScheme, View } from "react-native";
-import ThemedCard from "../../../components/ThemedCard";
 import ThemedScrollView from "../../../components/ThemedScrollView";
 import ThemedText from "../../../components/ThemedText";
 import ThemedView from "../../../components/ThemedView";
@@ -59,7 +58,7 @@ const Profile = () => {
         </View>
        </View>
 
-       <ThemedCard> </ThemedCard>
+       {/* <ThemedCard> </ThemedCard> */}
 
       </ThemedView>
     </ThemedScrollView>

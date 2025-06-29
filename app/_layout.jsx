@@ -1,10 +1,10 @@
 import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { StyleSheet, useColorScheme } from "react-native";
 import { Colors } from "../constants/Colors";
-import { StatusBar } from "expo-status-bar";
-import { UserProvider } from "../context/UserContext";
 import { HistoryProvider } from "../context/HistoryContext";
 import { RefineProvider } from "../context/RefineContext";
+import { UserProvider } from "../context/UserContext";
 
 const RootLayout = () => {
   const colorScheme = useColorScheme();

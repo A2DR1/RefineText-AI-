@@ -1,7 +1,4 @@
 import { Ionicons } from "@expo/vector-icons";
-import {
-  GoogleLogoButton
-} from '@react-native-google-signin/google-signin';
 import { Link, router } from "expo-router";
 import { useState } from "react";
 import {
@@ -25,7 +22,7 @@ const login = () => {
   const [error, setError] = useState(null);
 
   // Access the user context
-  const { user, login, loginWithGoogle } = useUser();
+  const { user, login } = useUser();
 
   const handleSubmit = async () => {
     setError(null); // Reset error state
@@ -39,18 +36,8 @@ const login = () => {
     }
   };
 
-  // const { promptAsync, request } = useGoogleAuth();
-
   const handleGoogleLogin = async () => {
-    setError(null); // Reset error state
-    try {
-      // await promptAsync();
-      await loginWithGoogle();
-      router.replace("/history");
-    } catch (error) {
-      console.log("Google login error:", error);
-      setError(error.message);
-    }
+    router.replace("/googleLoginWithReact");
   };
 
   return (
@@ -81,16 +68,15 @@ const login = () => {
         </ThemedButton>
 
         <ThemedButton onPress={handleGoogleLogin}>
-          <View style={{ 
-            flexDirection: "row",
-            
-          }}> 
-          <Ionicons name="logo-google" color="white" size={15}></Ionicons> 
-          <Text style={{ color: "white" }}>   Login with Google</Text>
+          <View
+            style={{
+              flexDirection: "row",
+            }}
+          >
+            <Ionicons name="logo-google" color="white" size={15}></Ionicons>
+            <Text style={{ color: "white" }}> Login with Google</Text>
           </View>
         </ThemedButton>
-
-        <GoogleLogoButton onPress={handleGoogleLogin} label="Sign in with Google"/>
 
         <Spacer size={10} />
         {error && <ThemedText style={{ color: "red" }}>{error}</ThemedText>}
