@@ -1,7 +1,7 @@
-import { Picker } from "@react-native-picker/picker";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
+  Alert,
   Keyboard,
   StyleSheet,
   TouchableWithoutFeedback
@@ -29,11 +29,15 @@ const Create = () => {
 
   const onSubmit = async () => {
     try {
-      setCategoryContext(category);
-      setToneContext(tone);
+      if (!title || !text) {
+        Alert.alert("Please fill in all fields");
+        return;
+      }
+      // setCategoryContext(category);
+      // setToneContext(tone);
       setTextContext(text);
       setTitleContext(title);
-      router.push("/home/result");
+      router.push("/home/detail");
     } catch (error) {
       console.error("Error creating history:", error);
     }
@@ -72,12 +76,12 @@ const Create = () => {
     >
       <ThemedScrollView>
         <ThemedView safe={true} style={styles.container}>
-          <Spacer height={20} />
+          {/* <Spacer height={20} /> */}
           <ThemedText title={true} style={styles.title}>
-            Refine New Texts!
+            What would you like to say?
           </ThemedText>
 
-          <ThemedText style={styles.text}>This is the create page.</ThemedText>
+          <ThemedText style={styles.text}>Write your message and we will help you refine it.</ThemedText>
           <Spacer height={20} />
 
           <ThemedTextInput
@@ -107,13 +111,16 @@ const Create = () => {
               height: 300,
               width: "90%",
               marginHorizontal: 20,
-              marginBottom: 20,
+              // marginBottom: 20,
               alignSelf: "center",
               textAlignVertical: "top",
             }}
           />
+          <ThemedText style={[styles.text, { textAlign: "right" }]}>
+            {text.length} / {10000} characters
+          </ThemedText>
 
-          <ThemedText style={styles.text}>Refinement Category:</ThemedText>
+          {/* <ThemedText style={styles.text}>Refinement Category:</ThemedText>
 
           <Picker
             selectedValue={category}
@@ -142,62 +149,18 @@ const Create = () => {
             <Picker.Item label="professional but empathetic" value="professional but empathetic" />
           </Picker>
 
-          <Spacer height={150} />
+          <Spacer height={150} /> */}
 
           <ThemedButton
             onPress={onSubmit}
-            style={{
-              marginTop: 20,
-              marginHorizontal: 20,
-              width: 200,
-              height: 80,
-              alignSelf: "center",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+            style={styles.btn}
           >
             <ThemedText title={true} style={{ color: "white", fontSize: 28 }}>
               Refine
             </ThemedText>
           </ThemedButton>
 
-          <Spacer height={20} />
-{/* 
-          <ThemedButton
-            onPress={testPostman}
-            style={{
-              marginTop: 20,
-              marginHorizontal: 20,
-              width: 200,
-              height: 80,
-              alignSelf: "center",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <ThemedText title={true} style={{ color: "white", fontSize: 28 }}>
-              Test Postman
-            </ThemedText>
-          </ThemedButton>
-
-           <Spacer height={20} />
-
-          <ThemedButton
-            onPress={testOpenAI}
-            style={{
-              marginTop: 20,
-              marginHorizontal: 20,
-              width: 200,
-              height: 80,
-              alignSelf: "center",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <ThemedText title={true} style={{ color: "white", fontSize: 28 }}>
-              Test OpenAI
-            </ThemedText>
-          </ThemedButton> */}
+          {/* <Spacer height={20} /> */}
 
         </ThemedView>
       </ThemedScrollView>
@@ -210,13 +173,15 @@ export default Create;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: "center",
+    marginHorizontal: 20,
   },
   title: {
-    textAlign: "center",
+    // textAlign: "center",
     fontSize: 30,
-    marginBottom: 30,
-    marginTop: 30,
+    marginBottom: 15,
+    marginTop: 10,
+    paddingHorizontal: 20,
+    fontWeight: "bold",
   },
   text: {
     fontSize: 16,
@@ -227,5 +192,13 @@ const styles = StyleSheet.create({
     width: "70%",
     marginBottom: 20,
     alignSelf: "center",
+  },
+  btn: {
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",  
+    width: "90%",
+    height: 80,
+    marginTop: 20,
   },
 });

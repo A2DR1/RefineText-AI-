@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 20,
     marginVertical: 10,
   },
   pressed: {

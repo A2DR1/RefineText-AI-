@@ -14,7 +14,7 @@ const home = () => {
 
   useEffect(() => {
     if (countdown === 0) {
-      router.replace("/home"); // or wherever you want to go
+      router.replace("/login"); // or wherever you want to go
       return;
     }
 

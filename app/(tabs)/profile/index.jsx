@@ -1,7 +1,8 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import { useCallback } from "react";
-import { StyleSheet, useColorScheme, View } from "react-native";
+import { StyleSheet, Text, useColorScheme, View } from "react-native";
+import ThemedButton from "../../../components/ThemedButton";
 import ThemedScrollView from "../../../components/ThemedScrollView";
 import ThemedText from "../../../components/ThemedText";
 import ThemedView from "../../../components/ThemedView";
@@ -37,29 +38,36 @@ const Profile = () => {
         safe={true}
         style={[styles.container, { backgroundColor: theme.background }]}
       >
+        {/* <ThemedText>Profile</ThemedText> */}
 
-       {/* <ThemedText>Profile</ThemedText> */}
-       
-       <View style={{flexDirection: "row", marginTop: 20}}>
-        <View style={{
-            backgroundColor: "grey",
-            height: 80,
-            width: 80,
-            borderRadius: 50,
-        }}></View>
+        <View style={{ flexDirection: "row", marginTop: 20 }}>
+          <View
+            style={{
+              backgroundColor: "grey",
+              height: 80,
+              width: 80,
+              borderRadius: 50,
+            }}
+          ></View>
 
-        <View style={{marginLeft: 10}}>
+          <View style={{ marginLeft: 10 }}>
             <ThemedText title={true} style={styles.title}>
-                {user?.email || "No user logged in"}
+              {user?.email || "No user logged in"}
             </ThemedText>
             <ThemedText style={styles.text}>
-                {user?.name || "No name available"}
+              {user?.name || "No name available"}
             </ThemedText>
+          </View>
         </View>
-       </View>
 
-       {/* <ThemedCard> </ThemedCard> */}
+        <ThemedButton
+          onPress={handleLogout}
+          style={{ width: 80, marginRight: 20 }}
+        >
+          <Text style={{ color: "white" }}>Logout</Text>
+        </ThemedButton>
 
+        {/* <ThemedCard> </ThemedCard> */}
       </ThemedView>
     </ThemedScrollView>
   );

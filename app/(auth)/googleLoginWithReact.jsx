@@ -1,14 +1,21 @@
 import {
-    GoogleSignin,
-    GoogleSigninButton,
+  GoogleSignin,
+  GoogleSigninButton,
 } from "@react-native-google-signin/google-signin";
+import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import ThemedLoader from "../../components/ThemedLoader";
+import { useUser } from "../../hooks/useUser";
+import { auth } from "../../lib/firebase";
 
-export default function App() {
+export default function GoogleLoginWithReact() {
   const [error, setError] = useState();
   const [userInfo, setUserInfo] = useState();
+  const { user } = useUser();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     GoogleSignin.configure({
@@ -21,34 +28,45 @@ export default function App() {
 
   const signin = async () => {
     try {
+      setIsLoading(true);
       await GoogleSignin.hasPlayServices();
       const user = await GoogleSignin.signIn();
-      setUserInfo(user);
+      if (!user) return;
+      if (user.type === "cancelled"){
+        setIsLoading(false);
+        console.log("user cancelled");
+        return;
+      }
+      console.log("user: ", user.data.user.givenName);
+      const { idToken } = user.data;
+      console.log("idToken: ", idToken);
+      const googleCredential = GoogleAuthProvider.credential(idToken);
+      const userCredential = await signInWithCredential(auth, googleCredential);
+
+      setUserInfo(userCredential.user);
       setError();
+      console.log("Successfully logged in with Google");
+      setIsLoading(false);
+      router.replace("/home");
     } catch (e) {
-      setError(e);
+      setError(e.message || e.toString());
+      console.log("Error: ", e);
     }
   };
 
-  const logout = () => {
-    setUserInfo();
-    GoogleSignin.revokeAccess();
-    GoogleSignin.signOut();
-  };
+  if (isLoading) {
+    return <ThemedLoader />;
+  }
 
   return (
     <View style={styles.container}>
       <Text>{JSON.stringify(error)}</Text>
-      {userInfo && <Text>{JSON.stringify(userInfo.user)}</Text>}
-      {userInfo ? (
-        <Button title="Logout" onPress={logout} />
-      ) : (
         <GoogleSigninButton
           size={GoogleSigninButton.Size.Standard}
           color={GoogleSigninButton.Color.Dark}
+          style={styles.btn}
           onPress={signin}
         />
-      )}
       <StatusBar style="auto" />
     </View>
   );
@@ -56,9 +74,15 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+    width: "100%",
+  },
+  btn: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "80%",
+    height: 50,
+    marginTop: 10,
   },
 });

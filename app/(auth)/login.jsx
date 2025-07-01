@@ -1,38 +1,44 @@
-import { Ionicons } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Keyboard,
   StyleSheet,
   Text,
-  TouchableWithoutFeedback,
-  View,
+  TouchableWithoutFeedback
 } from "react-native";
 import Spacer from "../../components/Spacer";
 import ThemedButton from "../../components/ThemedButton";
+import ThemedLoader from "../../components/ThemedLoader";
 import ThemedText from "../../components/ThemedText";
 import ThemedTextInput from "../../components/ThemedTextInput";
 import ThemedView from "../../components/ThemedView";
-import { Colors } from "../../constants/Colors";
 import { useUser } from "../../hooks/useUser";
+import GoogleLoginWithReact from "./googleLoginWithReact";
 
 const login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-
+  const [isLoading, setIsLoading] = useState(false);
   // Access the user context
   const { user, login } = useUser();
 
   const handleSubmit = async () => {
     setError(null); // Reset error state
-    // Handle login logic here
+    setIsLoading(true);
+    if (!email || !password) {
+      setError("Please fill in all fields");
+      setIsLoading(false);
+      return;
+    }
     try {
       await login(email, password);
-      router.replace("/history");
+      router.replace("/home");
+      setIsLoading(false);
     } catch (error) {
       console.log("Login error:", error);
       setError(error.message);
+      setIsLoading(false);
     }
   };
 
@@ -40,11 +46,25 @@ const login = () => {
     router.replace("/googleLoginWithReact");
   };
 
+  useEffect(() => {
+    if (user) {
+      router.replace("/home");
+    }
+  }, [user]);
+
+  if (isLoading) {
+    return <ThemedLoader />;
+  }
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <ThemedView style={styles.container}>
         <ThemedText title={true} style={styles.title}>
-          Login to Your Account
+          Welcome Back!
+        </ThemedText>
+
+        <ThemedText style={styles.text}>
+          Sign in to continue
         </ThemedText>
 
         <ThemedTextInput
@@ -63,20 +83,11 @@ const login = () => {
           style={styles.textinput}
         />
 
-        <ThemedButton onPress={handleSubmit}>
-          <Text style={{ color: "white" }}>Login</Text>
+        <ThemedButton onPress={handleSubmit} style={styles.btn}>
+          <Text style={{ color: "white" }}>Login with Email & Password</Text>
         </ThemedButton>
 
-        <ThemedButton onPress={handleGoogleLogin}>
-          <View
-            style={{
-              flexDirection: "row",
-            }}
-          >
-            <Ionicons name="logo-google" color="white" size={15}></Ionicons>
-            <Text style={{ color: "white" }}> Login with Google</Text>
-          </View>
-        </ThemedButton>
+        <GoogleLoginWithReact />
 
         <Spacer size={10} />
         {error && <ThemedText style={{ color: "red" }}>{error}</ThemedText>}
@@ -86,9 +97,6 @@ const login = () => {
           <ThemedText style={styles.text}>Register Instead</ThemedText>
         </Link>
 
-        <ThemedButton onPress={() => router.replace("/history")}>
-          <Text style={{ color: "white" }}>Stay not signed in</Text>
-        </ThemedButton>
       </ThemedView>
     </TouchableWithoutFeedback>
   );
@@ -109,15 +117,20 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: "center",
+    fontWeight: "bold",
     fontSize: 30,
-    marginBottom: 30,
+    marginBottom: 15,
+  },
+  text: {
+    fontSize: 16,
+    height: 60,
   },
   btn: {
-    backgroundColor: Colors.primary,
     justifyContent: "center",
-    alignItems: "center",
-    padding: 15,
-    borderRadius: 5,
+    alignItems: "center",  
+    width: "80%",
+    height: 50,
+    marginTop: 20,
   },
   pressed: {
     opacity: 0.8,

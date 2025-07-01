@@ -57,14 +57,21 @@ export const UserProvider = ({ children }) => {
   };
 
   async function logout() {
-    signOut(auth)
-      .then(() => {
-        setUser(null);
-        console.log("User logged out");
-      })
-      .catch((error) => {
-        console.error("Error during logout:", error);
-      });
+    try {
+      // Sign out from Firebase auth
+      await signOut(auth);
+      
+      // Add logic to sign out from Google if necessary
+      if (auth.currentUser && auth.currentUser.providerData.some(provider => provider.providerId === 'google.com')) {
+        // Assuming you have a function to handle Google sign out
+        await googleSignOut();
+      }
+
+      setUser(null);
+      console.log("User logged out from all services");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   }
 
   return (

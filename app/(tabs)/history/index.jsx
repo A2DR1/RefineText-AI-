@@ -1,8 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import { useCallback } from "react";
-import { StyleSheet, Text, useColorScheme, View } from "react-native";
-import ThemedButton from "../../../components/ThemedButton";
+import { StyleSheet, useColorScheme, View } from "react-native";
 import ThemedHistoryCard from "../../../components/ThemedHistoryCard";
 import ThemedScrollView from "../../../components/ThemedScrollView";
 import ThemedText from "../../../components/ThemedText";
@@ -26,11 +25,6 @@ const History = () => {
       console.error("Error finding history:", error);
     }
   }
-
-  const handleLogout = async () => {
-    await logout();
-    console.log("Logout button pressed");
-  };
 
   useFocusEffect(
     useCallback(() => {
@@ -57,22 +51,18 @@ const History = () => {
             flex: 1,
             width: "100%",
             flexDirection: "row",
-            justifyContent: "space-between",
+            justifyContent: "center",
             alignItems: "center",
+
           }}
         >
-          <View style={{ width: 80, marginLeft: 20 }}></View>
+          {/* <View style={{ width: 80, marginLeft: 20 }}></View> */}
 
           <ThemedText style={[styles.title, {}]} title={true}>
             History
           </ThemedText>
 
-          <ThemedButton
-            onPress={handleLogout}
-            style={{ width: 80, marginRight: 20 }}
-          >
-            <Text style={{ color: "white" }}>Logout</Text>
-          </ThemedButton>
+          
         </View>
 
         <ThemedText style={[styles.title, { fontSize: 30 }]} title={true}>

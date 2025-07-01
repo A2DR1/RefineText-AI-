@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback } from "react-native";
 import Spacer from "../../components/Spacer";
 import ThemedButton from "../../components/ThemedButton";
+import ThemedLoader from "../../components/ThemedLoader"; // Import ThemedLoader
 import ThemedText from "../../components/ThemedText";
 import ThemedTextInput from "../../components/ThemedTextInput";
 import ThemedView from "../../components/ThemedView";
-import { Colors } from "../../constants/Colors";
 import { useUser } from "../../hooks/useUser";
 
 const Register = () => {
@@ -14,14 +14,27 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
 
   const { user, register } = useUser();
 
   const handleSubmit = async () => {
-    // Handle register logic here
     setError(null); // Reset error state
+    setIsLoading(true); // Set loading state to true
     try {
+      if (!email || !password || !confirmPassword) {
+        setError("Please fill in all fields");
+        setIsLoading(false); // Reset loading state
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError("Passwords do not match");
+        setIsLoading(false); // Reset loading state
+        return;
+      }
       await register(email, password);
+      setIsLoading(false);
+      router.replace("/home");
     } catch (error) {
       console.log("Registration error:", error);
       setError(error.message);
@@ -30,12 +43,16 @@ const Register = () => {
 
   useEffect(() => {
     if (user) {
-      console.log("User already logged in, redirecting to history");
-      router.replace("/history");
+      console.log("User already logged in, redirecting to home");
+      router.replace("/home");
     } else {
       console.log("No user logged in, showing register form");
     }
   }, [user]);
+
+  if (isLoading) {
+    return <ThemedLoader />; // Show loader when loading
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -69,7 +86,7 @@ const Register = () => {
         style={styles.textinput}
       />
 
-      <ThemedButton onPress={handleSubmit}>
+      <ThemedButton onPress={handleSubmit} style={styles.btn}>
         <Text style={{ color: "white" }}>Register</Text>
       </ThemedButton>
 
@@ -83,11 +100,6 @@ const Register = () => {
         <ThemedText style={styles.text}>Login Instead</ThemedText>
       </Link>
 
-      <ThemedButton
-          onPress={() => router.replace("/history")}
-        >
-          <Text style={{ color: "white" }}>Stay not signed in</Text>
-        </ThemedButton>
     </ThemedView>
     </TouchableWithoutFeedback>
   );
@@ -108,15 +120,16 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: "center",
+    fontWeight: "bold",
     fontSize: 30,
     marginBottom: 30,
   },
   btn: {
-    backgroundColor: Colors.primary,
     justifyContent: "center",
-    alignItems: "center",
-    padding: 15,
-    borderRadius: 5,
+    alignItems: "center",  
+    width: "80%",
+    height: 50,
+    marginTop: 20,
   },
   pressed: {
     opacity: 0.8,
