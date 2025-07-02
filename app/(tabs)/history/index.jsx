@@ -58,16 +58,16 @@ const History = () => {
         >
           {/* <View style={{ width: 80, marginLeft: 20 }}></View> */}
 
-          <ThemedText style={[styles.title, {}]} title={true}>
+          <ThemedText style={[styles.title]} title={true}>
             History
           </ThemedText>
 
           
         </View>
 
-        <ThemedText style={[styles.title, { fontSize: 30 }]} title={true}>
+        {/* <ThemedText style={[styles.title, { fontSize: 30 }]} title={true}>
           Hello, {user ? user?.email?.split("@")[0] : ""}!
-        </ThemedText>
+        </ThemedText> */}
 
         {histories.length <= 0 ? (
           <ThemedText>No history found.</ThemedText>
@@ -82,6 +82,9 @@ const History = () => {
               onPress={() => findHistory(history.id)}
               refresh={fetchHistories}
               category={history.category}
+              style={{
+                width: 350,
+              }}
             >
               
             </ThemedHistoryCard>
