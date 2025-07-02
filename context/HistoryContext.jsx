@@ -104,6 +104,19 @@ export const HistoryProvider = ({ children }) => {
     }
   }
 
+  // delete all histories for the current user
+  async function deleteAllHistories(currentUser) {
+    try {
+      const q = query(collection(db, "histories"), where("uid", "==", currentUser.uid));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        deleteDoc(doc.ref);
+      });
+    } catch (error) {
+      console.error("Error deleting all histories:", error);
+    }
+  }
+
   return (
     <HistoryContext.Provider
       value={{
@@ -115,6 +128,7 @@ export const HistoryProvider = ({ children }) => {
         createHistory,
         updateHistory,
         deleteHistory,
+        deleteAllHistories,
       }}
     >
       {children}

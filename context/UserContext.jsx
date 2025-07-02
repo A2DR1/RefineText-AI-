@@ -1,5 +1,6 @@
 import {
   createUserWithEmailAndPassword,
+  deleteUser,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut
@@ -56,6 +57,20 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  async function deleteAccount() {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        await deleteUser(user);
+        console.log("User account deleted successfully!");
+      } else {
+        console.log("No user is signed in.");
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  }
+
   async function logout() {
     try {
       // Sign out from Firebase auth
@@ -76,7 +91,7 @@ export const UserProvider = ({ children }) => {
 
   return (
     <userContext.Provider
-      value={{ user, login, register, logout, authChecked }}
+      value={{ user, login, register, logout, authChecked, deleteAccount }}
     >
       {children}
     </userContext.Provider>
