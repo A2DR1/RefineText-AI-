@@ -1,4 +1,5 @@
-import { AntDesign } from "@expo/vector-icons";
+import Entypo from '@expo/vector-icons/Entypo';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -128,9 +129,9 @@ const Result = () => {
               {title}
             </ThemedText>
 
-          <ThemedButton onPress={onDelete}>
+          {/* <ThemedButton onPress={onDelete}>
             <AntDesign name="delete" size={30} color="white" />
-          </ThemedButton>
+          </ThemedButton> */}
           </ThemedView>
 
 
@@ -155,10 +156,12 @@ const Result = () => {
           />
 
           <ThemedView style={styles.buttonRow}>
-            <ThemedButton onPress={onUpdate}>
-              <Text style={{ color: "white" }}>Update Results</Text>
+            <ThemedButton onPress={onUpdate} style={styles.btn}>
+            <MaterialIcons name="update" size={24} color="white" />
+              <Text style={{ color: "white" }}>Update Result</Text>
             </ThemedButton>
-            <ThemedButton onPress={onRefineAgain}>
+            <ThemedButton onPress={onRefineAgain} style={styles.btn}>
+            <Entypo name="text-document" size={24} color="white" />
               <Text style={{ color: "white" }}>Refine Again</Text>
             </ThemedButton>
 
@@ -178,14 +181,16 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 40,
-    margin: 10,
+    marginHorizontal: 20,
+    marginVertical: 10,
   },
   text: {
     fontSize: 20,
-    margin: 10,
+    marginHorizontal: 20,
+    marginVertical: 10,
   },
   resultBox: {
-    height: 500,
+    height: 300,
     width: "90%",
     alignSelf: "center",
     marginBottom: 20,
@@ -201,5 +206,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     marginTop: 20,
+    marginHorizontal: 10,
   },
+  btn: {
+    width: "45%",
+  }
 });
