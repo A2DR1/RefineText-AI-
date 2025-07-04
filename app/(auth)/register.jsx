@@ -37,6 +37,7 @@ const Register = () => {
       router.replace("/home");
     } catch (error) {
       console.log("Registration error:", error);
+      setIsLoading(false);
       setError(error.message);
     }
   };

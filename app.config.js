@@ -5,7 +5,7 @@ export default {
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "refinetextai",
+    "scheme": "RefineText_AI",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -25,11 +25,22 @@ export default {
     },
     "web": {
       "bundler": "metro",
-      "output": "static",
+      "output": "server",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router",
+      ["expo-router", {
+        "origin": "https://refinetext-ai.expo.dev"
+      }
+      ],
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.austinshen.refinetextai",
+          "publishableKey": "pk_test_51RdJb3FbLvNBCg6MOutIv7Xp1oDFw1xwygNnjfHRpvVYmZgzfQhe7MhAVYBf4ZVTCvGWb04rtQ107cLkfhqSMJpw00YCLU7k0c",
+        }
+
+      ],
       [
         "expo-splash-screen",
         {

@@ -23,7 +23,7 @@ const Create = () => {
   const { user } = useUser();
   const { currentUser } = auth;
   const { createHistory } = useHistory();
-  const { setCategoryContext, setToneContext, setTextContext, setTitleContext } = useRefine();
+  const { setTextContext, setTitleContext } = useRefine();
 
   const onSubmit = async () => {
     try {

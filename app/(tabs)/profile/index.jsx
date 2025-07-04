@@ -1,4 +1,4 @@
-import Entypo from '@expo/vector-icons/Entypo';
+import Entypo from "@expo/vector-icons/Entypo";
 import { useFocusEffect } from "@react-navigation/native";
 import { Image } from "expo-image";
 import { router } from "expo-router";
@@ -12,9 +12,10 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import Spacer from '../../../components/Spacer';
+import Spacer from "../../../components/Spacer";
+import SubscriptionForm from "../../../components/subscription-form";
 import ThemedButton from "../../../components/ThemedButton";
-import ThemedCard from '../../../components/ThemedCard';
+import ThemedCard from "../../../components/ThemedCard";
 import ThemedScrollView from "../../../components/ThemedScrollView";
 import ThemedText from "../../../components/ThemedText";
 import ThemedView from "../../../components/ThemedView";
@@ -23,11 +24,13 @@ import { useHistory } from "../../../hooks/useHistory";
 import { useUser } from "../../../hooks/useUser";
 
 const Profile = () => {
-  const { user, logout, deleteAccount } = useUser();
-  const { histories, fetchHistories, fetchHistoryById, deleteAllHistories } = useHistory();
+  const { user, logout, deleteAccount, subStatus, updateSubStatus } = useUser();
+  const { histories, fetchHistories, fetchHistoryById, deleteAllHistories } =
+    useHistory();
   const colorScheme = useColorScheme();
   const theme = Colors[colorScheme] ?? Colors.light;
   const [modalVisible, setModalVisible] = useState(false);
+  const [sliderValue, setSliderValue] = useState(50);
 
   const handleLogout = async () => {
     await logout();
@@ -52,10 +55,12 @@ const Profile = () => {
               await deleteAccount();
               console.log("Delete account button pressed");
             } catch (error) {
-              Alert.alert("Error", "Something went wrong while deleting your account.");
+              Alert.alert(
+                "Error",
+                "Something went wrong while deleting your account."
+              );
               console.error("Error deleting account:", error);
-            }
-            finally {
+            } finally {
               await deleteAllHistories(currentUser);
             }
           },
@@ -72,6 +77,7 @@ const Profile = () => {
         router.replace("/(auth)/login");
       } else {
         // to do?
+        updateSubStatus();
       }
     }, [user])
   );
@@ -92,11 +98,16 @@ const Profile = () => {
           }}
         >
           <View style={styles.centeredView}>
-            <View style={[styles.modalView, {backgroundColor: theme.navBackground}]}>
-            <Image
-              source={require("../../../assets/images/profile2.jpeg")}
-              style={{ width: 300, height: 300, borderRadius: "50%" }}
-            />
+            <View
+              style={[
+                styles.modalView,
+                { backgroundColor: theme.navBackground },
+              ]}
+            >
+              <Image
+                source={require("../../../assets/images/profile2.jpeg")}
+                style={{ width: 300, height: 300, borderRadius: "50%" }}
+              />
               {/* <Text style={styles.modalText}>Hello World!</Text> */}
               <ThemedButton
                 style={[styles.button, styles.buttonClose]}
@@ -132,7 +143,7 @@ const Profile = () => {
           >
             <Image
               source={require("../../../assets/images/profile2.jpeg")}
-              style={{ width: 80, height: 80, borderRadius: '50%' }}
+              style={{ width: 80, height: 80, borderRadius: "50%" }}
             />
           </Pressable>
 
@@ -148,23 +159,61 @@ const Profile = () => {
 
         <Spacer size={20} />
 
-        <ThemedCard style={styles.card}>
-          <ThemedText>
-            <Text>Current Plan</Text>
-          </ThemedText>
-        </ThemedCard>
+        {/* <ThemedCard style={styles.card}>
+          <ThemedText>Help the growth of RefineText AI</ThemedText>
 
-        <ThemedButton
-          onPress={handleLogout}
-          style={styles.btn}
-        >
+          <ThemedText>Your donation is {sliderValue}</ThemedText>
+          <Slider
+            value={sliderValue}
+            onValueChange={(value) => setSliderValue(value)}
+            minimumValue={0}
+            maximumValue={100}
+            step={1}
+          />
+
+          <CheckOutFormNative amount={sliderValue} />
+        </ThemedCard> */}
+
+        {subStatus === "active" && (
+          <ThemedCard
+            style={{
+              width: "80%",
+              height: 130,
+              margin: 20,
+            }}
+          >
+            <ThemedText
+              style={{
+                fontSize: 30,
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              Thank you for subscribing!
+            </ThemedText>
+            {/* <ThemedButton onPress={() => {}} style={{ marginTop: 20 }}>
+              <Text style={{ color: "white" }}>Cancel Subscription</Text>
+            </ThemedButton> */}
+          </ThemedCard>
+        )}
+
+        {subStatus === "inactive" && (
+          <ThemedCard style={styles.card}>
+            <ThemedText>One Month Subscription</ThemedText>
+            <ThemedText>Price: $10</ThemedText>
+            <SubscriptionForm
+              email={user?.email}
+              priceId={"price_1RdJiKFbLvNBCg6MnRg44qR5"}
+              uid={user?.uid}
+            />
+          </ThemedCard>
+        )}
+
+        <ThemedButton onPress={handleLogout} style={styles.btn}>
           <Text style={{ color: "white" }}>Logout</Text>
         </ThemedButton>
 
-        <ThemedButton
-          onPress={handleDeleteAccount}
-          style={styles.btn}
-        >
+        <ThemedButton onPress={handleDeleteAccount} style={styles.btn}>
           <Text style={{ color: "white" }}>Delete Account</Text>
         </ThemedButton>
 
@@ -197,7 +246,7 @@ const styles = StyleSheet.create({
   },
   card: {
     width: "80%",
-    height: 100,
+    height: 200,
     margin: 20,
   },
   btn: {
@@ -206,16 +255,16 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -238,12 +287,12 @@ const styles = StyleSheet.create({
   //   backgroundColor: '#2196F3',
   // },
   textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
   modalText: {
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });

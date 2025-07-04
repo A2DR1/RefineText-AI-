@@ -1,7 +1,7 @@
 import { Picker } from "@react-native-picker/picker";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import ThemedButton from "../../../components/ThemedButton";
 import ThemedScrollView from "../../../components/ThemedScrollView";
 import ThemedText from "../../../components/ThemedText";
@@ -112,11 +112,23 @@ const Detail = () => {
           />
         )}
 
-        <ThemedButton onPress={onSubmit} style={styles.btn}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+
+        <ThemedButton onPress={() => router.push("/home/addContext")} style={styles.btn}>
           <ThemedText title={true} style={{ color: "white", fontSize: 16 }}>
-            Refine
+            Add Context
           </ThemedText>
         </ThemedButton>
+
+        <ThemedButton onPress={onSubmit} style={styles.btn}>
+          <ThemedText title={true} style={{ color: "white", fontSize: 16 }}>
+            Refine Now
+          </ThemedText>
+        </ThemedButton>
+
+        </View>
+
+
 
       </ThemedView>
     </ThemedScrollView>
@@ -145,7 +157,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
-    width: "80%",
+    width: "45%",
     height: 50,
     // marginTop: 20,
   },
